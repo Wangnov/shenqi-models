@@ -2,7 +2,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import sharp from 'sharp';
 const root=new URL('../public/brand/',import.meta.url);await mkdir(root,{recursive:true});
 const svg=await readFile(new URL('logo.svg',root),'utf8');
-const staticSvg=svg.replace(/<style>[\s\S]*?<\/style>/,'');
+const staticSvg=svg.replace(/<style>[\s\S]*?<\/style>/,'').replace(/^[ \t]+$/gm,'');
 await writeFile(new URL('logo-static.svg',root),staticSvg);
 const favicon=staticSvg.replace('viewBox="0 0 256 256"','viewBox="25 21 206 206"').replace(/<defs>/,'<rect x="25" y="21" width="206" height="206" rx="42" fill="#04070c"/><defs>');
 await writeFile(new URL('favicon.svg',root),favicon);

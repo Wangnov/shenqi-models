@@ -6,7 +6,7 @@
     <linearGradient id="blue" x1="60" y1="132" x2="196" y2="178" gradientUnits="userSpaceOnUse"><stop stop-color="#90e2ff"/><stop offset=".3" stop-color="#329bd4"/><stop offset=".57" stop-color="#b7f0ff"/><stop offset=".8" stop-color="#258ac5"/><stop offset="1" stop-color="#9deaff"/></linearGradient>
     <clipPath id="crossing"><circle cx="128" cy="154" r="11"/></clipPath>
   </defs>
-  
+
   <g stroke="url(#gold)" stroke-linecap="round">
     <circle cx="128" cy="124" r="92" stroke-width="3"/>
     <path d="M128 34V48 M128 200V214 M38 124H50 M206 124H218 M83 46L88 55 M168 193L173 202 M50 79L59 84 M197 164L206 169 M50 169L59 164 M197 84L206 79 M83 202L88 193 M168 55L173 46" stroke-width="3"/>
