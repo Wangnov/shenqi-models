@@ -5,8 +5,10 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { particles, atmosphere, orbitLines, portalFrame, sampleSurface, timeDial, flowRibbon } from './effects';
+import { SceneMusic } from './music';
 import './style.css';
 
 const $ = <T extends HTMLElement = HTMLElement>(selector:string) => document.querySelector<T>(selector)!;
@@ -32,14 +34,17 @@ const worlds:(World|undefined)[]=[undefined,undefined,undefined];const pending=n
 let current=0,ready=false,transitioning=false,dissolve=0,targetDissolve=0,timePosition=24,timeRate=reduced?0:1,portalTravel=0,portalCount=0;
 let elapsed=0,activeSeconds=0,lastFrame=performance.now(),lastWheel=0,qualityIndex=0,currentDpr=1,lowQuality=isMobile(),fps=60,frames=0,fpsElapsed=0;
 const pointer=new THREE.Vector2(),smoothPointer=new THREE.Vector2();const raycaster=new THREE.Raycaster();
-const emptyScene=new THREE.Scene();const composer=new EffectComposer(renderer);const renderPass=new RenderPass(emptyScene,camera);composer.addPass(renderPass);
-const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.4,.45,2.0);composer.addPass(bloom);composer.addPass(new OutputPass());
+// Canvas antialiasing does not cover EffectComposer's offscreen targets.
+const sceneTarget=new THREE.WebGLRenderTarget(innerWidth,innerHeight,{type:THREE.HalfFloatType,samples:Math.min(4,renderer.capabilities.maxSamples)});
+const emptyScene=new THREE.Scene();const composer=new EffectComposer(renderer,sceneTarget);const renderPass=new RenderPass(emptyScene,camera);composer.addPass(renderPass);
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.32,.45,2.0);composer.addPass(bloom);
+const smaa=new SMAAPass();composer.addPass(smaa);composer.addPass(new OutputPass());
 if(import.meta.env.DEV&&new URLSearchParams(location.search).has('nobloom'))bloom.enabled=false;
 
 function resize(){
   const mobile=isMobile();lowQuality=qualityIndex===2||(qualityIndex===0&&mobile);
   currentDpr=Math.min(devicePixelRatio,lowQuality?1:1.6);renderer.setPixelRatio(currentDpr);renderer.setSize(innerWidth,innerHeight);composer.setPixelRatio(currentDpr);composer.setSize(innerWidth,innerHeight);
-  camera.aspect=innerWidth/innerHeight;camera.fov=mobile?49:43;camera.updateProjectionMatrix();bloom.strength=lowQuality?.3:.4;
+  camera.aspect=innerWidth/innerHeight;camera.fov=mobile?49:43;camera.updateProjectionMatrix();bloom.strength=lowQuality?.25:.32;
   worlds.forEach(w=>{if(!w)return;w.anchor.position.set(mobile?0:1.85,mobile?1.55:.05,0);w.anchor.scale.setScalar(mobile?.64:1);w.systems.forEach(p=>{p.material.uniforms.uDpr.value=currentDpr;const count=p.geometry.attributes.position.count;p.geometry.setDrawRange(0,lowQuality?Math.floor(count*.48):count);});w.surface.material.uniforms.uDpr.value=currentDpr;w.surface.geometry.setDrawRange(0,lowQuality?12000:36000);});
 }
 addEventListener('resize',resize);resize();
@@ -143,23 +148,35 @@ function syncTimeUI(){
 }
 $('#pause').onclick=()=>{timeRate=timeRate===0?1:0;syncTimeUI();status(timeRate===0?'时间已冻结 · 仍可移动视角':'时间继续向前');};
 $('#reverse').onclick=()=>{timeRate=timeRate<0?1:-1;syncTimeUI();status(timeRate<0?'时间倒流':'时间向前');};
-timeInput.addEventListener('input',()=>{timePosition=Number(timeInput.value);timeRate=0;syncTimeUI();});syncTimeUI();
+timeInput.addEventListener('input',()=>{timePosition=Math.floor(timePosition/60)*60+Number(timeInput.value);timeRate=0;syncTimeUI();});syncTimeUI();
 
-let audioContext:AudioContext|undefined,audioGain:GainNode|undefined,audioNodes:OscillatorNode[]=[],soundOn=false;
-function updateSound(){if(!audioContext||!audioGain)return;const t=audioContext.currentTime,f=[55,65.406,49][current];audioNodes.forEach((node,i)=>node.frequency.setTargetAtTime(f*[1,1.5,2.002][i],t,.7));audioGain.gain.setTargetAtTime(soundOn?.022:0,t,.3);}
+const music=new SceneMusic();
+function syncMusicUI(){
+  document.body.classList.toggle('sound-on',music.enabled);
+  $('#sound').setAttribute('aria-pressed',String(music.enabled));
+  const label=music.enabled?`关闭配乐：${music.title}`:'开启史诗配乐';
+  $('#sound').setAttribute('aria-label',label);$('#sound').title=label;
+  $('#score-title').textContent=music.enabled?music.title:'史诗配乐';
+}
+function musicFailure(){void music.setEnabled(false);syncMusicUI();status('配乐未能加载，点击声音按钮可重试。');}
+function updateSound(){void music.select(current).then(syncMusicUI).catch(musicFailure);}
 $('#sound').onclick=async()=>{
-  try{if(!audioContext){audioContext=new AudioContext();audioGain=audioContext.createGain();audioGain.gain.value=0;const filter=audioContext.createBiquadFilter();filter.type='lowpass';filter.frequency.value=450;filter.connect(audioGain);audioGain.connect(audioContext.destination);for(let i=0;i<3;i++){const oscillator=audioContext.createOscillator();oscillator.type='sine';oscillator.connect(filter);oscillator.start();audioNodes.push(oscillator);}}
-    await audioContext.resume();soundOn=!soundOn;updateSound();document.body.classList.toggle('sound-on',soundOn);$('#sound').setAttribute('aria-pressed',String(soundOn));$('#sound').setAttribute('aria-label',soundOn?'关闭环境声音':'开启环境声音');$('#sound').title=soundOn?'关闭环境声音':'开启环境声音';
-  }catch{status('此浏览器暂时无法播放环境声音。');}
+  try{
+    const enabling=!music.enabled;
+    const pending=music.setEnabled(enabling,current);syncMusicUI();
+    if(enabling)status('正在加载本章配乐');
+    await pending;syncMusicUI();if(music.enabled)status(`正在播放 · ${music.title}`);
+  }catch{musicFailure();}
 };
-document.addEventListener('visibilitychange',()=>{lastFrame=performance.now();if(document.hidden){release();if(audioContext)void audioContext.suspend();}else if(soundOn&&audioContext)void audioContext.resume();});
+document.addEventListener('visibilitychange',()=>{lastFrame=performance.now();if(document.hidden)release();void music.setHidden(document.hidden).catch(musicFailure);});
 
 function frame(now:number){
   requestAnimationFrame(frame);const dt=Math.min((now-lastFrame)/1000,.05);lastFrame=now;if(document.hidden)return;
   elapsed+=dt;activeSeconds+=dt;
   if(!ready)return;
   const world=worlds[current]!;world.clock+=reduced?0:dt;
-  if(current===2){timePosition=(timePosition+dt*timeRate+60)%60;if(document.activeElement!==timeInput)timeInput.value=String(timePosition);}
+  // Keep the animation clock continuous; only the slider wraps at one minute.
+  if(current===2){timePosition+=dt*timeRate;if(document.activeElement!==timeInput)timeInput.value=String((timePosition%60+60)%60);}
   const t=current===2?timePosition:world.clock;
   smoothPointer.lerp(pointer,1-Math.exp(-dt*3));
   dissolve=THREE.MathUtils.damp(dissolve,targetDissolve,targetDissolve>dissolve?2.2:3.4,dt);
@@ -182,7 +199,7 @@ function frame(now:number){
   if(import.meta.env.DEV&&new URLSearchParams(location.search).has('raw'))renderer.render(world.scene,camera);else composer.render();
   frames++;fpsElapsed+=dt;if(fpsElapsed>=1){fps=frames/fpsElapsed;frames=0;fpsElapsed=0;if(qualityIndex===0&&activeSeconds>8&&fps<28&&currentDpr>1){qualityIndex=2;$('#quality span').textContent='流畅';resize();}}
   // Small read-only diagnostics surface for runtime checks, without exposing scene objects.
-  Object.assign(diagnostics,{scene:current,ready,transitioning,dissolve,timePosition,timeRate,portalCount,portalTravel,particles:world.systems.reduce((n,p)=>n+p.geometry.drawRange.count,0),fps:Math.round(fps),loaded:worlds.filter(Boolean).length,drawCalls:renderer.info.render.calls});
+  Object.assign(diagnostics,{scene:current,ready,transitioning,dissolve,timePosition:(timePosition%60+60)%60,continuousTime:timePosition,timeRate,portalCount,portalTravel,particles:world.systems.reduce((n,p)=>n+p.geometry.drawRange.count,0),fps:Math.round(fps),loaded:worlds.filter(Boolean).length,drawCalls:renderer.info.render.calls,music:music.state});
 }
 const diagnostics={scene:0,ready:false,transitioning:false,dissolve:0,timePosition:24,timeRate,portalCount:0,portalTravel:0,particles:0,fps:0,loaded:0,drawCalls:0};
 Object.defineProperty(window,'__shenqi',{value:diagnostics,writable:false});

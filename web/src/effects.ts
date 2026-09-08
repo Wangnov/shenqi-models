@@ -40,18 +40,20 @@ void main(){
   }
   vec4 mv=modelViewMatrix*vec4(p,1.);
   gl_Position=projectionMatrix*mv;
-  float twinkle=.68+.32*sin(t*(.3+aSeed.w)+aSeed.z*35.);
-  gl_PointSize=clamp((.7+aSeed.w*2.4)*uDpr*(8./-mv.z),.6,6.);
-  vColor=aColor*(1.2+aSeed.w*1.6);
-  vAlpha=(.28+aSeed.y*.7)*twinkle;
+  // A soft footprint spanning several physical pixels prevents moving points
+  // from blinking on/off at pixel boundaries. Preserve energy as it expands.
+  float desired=(.7+aSeed.w*2.4)*uDpr*(8./max(.1,-mv.z));
+  float footprint=clamp(desired,2.8,7.);
+  gl_PointSize=footprint;
+  vColor=aColor*(1.1+aSeed.w*.9);
+  vAlpha=(.28+aSeed.y*.7)*.82*min(1.,pow(desired/footprint,2.));
 }`;
 const particleFragment = /* glsl */`
 varying vec3 vColor;
 varying float vAlpha;
 void main(){
   float d=length(gl_PointCoord-.5)*2.;
-  if(d>1.)discard;
-  float a=pow(1.-d,1.7)*vAlpha;
+  float a=exp(-4.5*d*d)*(1.-smoothstep(.7,1.,d))*vAlpha;
   gl_FragColor=vec4(vColor,a);
 }`;
 
@@ -112,7 +114,9 @@ export function flowRibbon(mode:number,color:string){
   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));geometry.setIndex(indices);
   const material=new THREE.ShaderMaterial({uniforms:{uTime:{value:0},uColor:{value:new THREE.Color(color)},uMode:{value:mode}},transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,
     vertexShader:`varying vec2 vUv;varying float vStrip;uniform float uMode;void main(){vUv=uv;vStrip=position.z;float a=position.x,r=3.25+position.z*.077+sin(a*3.+position.z)*.043;vec3 p;if(uMode<.5){p=vec3(cos(a)*r,sin(a*2.+position.z)*.09+position.y*.018,sin(a)*r);}else{p=vec3(cos(a)*r,sin(a)*r*.69,sin(a*1.4+position.z)*.65);p.xy+=vec2(cos(a),sin(a))*position.y*.023;}gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,
-    fragmentShader:`varying vec2 vUv;varying float vStrip;uniform float uTime;uniform vec3 uColor;void main(){float edge=pow(1.-abs(vUv.y*2.-1.),1.5);float streak=pow(.5+.5*sin(vUv.x*12.566-uTime*.16+vStrip),5.);gl_FragColor=vec4(uColor*3.4,edge*(.025+streak*.20));}`,
+    // Interpolation at a triangle edge can slightly exceed [0, 1]. A negative
+    // fractional-power base becomes NaN and contaminates the entire bloom frame.
+    fragmentShader:`varying vec2 vUv;varying float vStrip;uniform float uTime;uniform vec3 uColor;void main(){float edge=pow(clamp(1.-abs(vUv.y*2.-1.),0.,1.),1.5);float streak=pow(clamp(.5+.5*sin(vUv.x*12.566-uTime*.16+vStrip),0.,1.),5.);gl_FragColor=vec4(uColor*3.4,edge*(.025+streak*.20));}`,
   });
   const mesh=new THREE.Mesh(geometry,material);mesh.frustumCulled=false;return mesh;
 }
@@ -168,7 +172,7 @@ export function sampleSurface(root:THREE.Object3D,count:number){
     vertexShader:/* glsl */`attribute vec3 aColor;attribute vec4 aSeed;uniform float uTime;uniform float uDissolve;uniform float uDpr;varying vec3 vColor;varying float vAlpha;
       void main(){float f=uDissolve;vec3 p=position;vec3 dir=normalize(position+vec3(aSeed.x-.5,aSeed.y-.5,aSeed.z-.5)*2.);float speed=.8+aSeed.w*3.;float theta=f*2.3;mat2 rot=mat2(cos(theta),-sin(theta),sin(theta),cos(theta));p+=dir*f*speed;p.xz=rot*p.xz;p.y+=sin(aSeed.x*25.+uTime*.5)*f*.5;
       vec4 mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;gl_PointSize=clamp((1.2+aSeed.w*1.5)*uDpr*8./-mv.z,.6,5.);vColor=mix(aColor*1.7,vec3(.55,.76,1.3),f*.35);vAlpha=smoothstep(0.,.15,f)*(.45+aSeed.y*.55);}`,
-    fragmentShader:particleFragment.replace('pow(1.-d,1.7)','pow(1.-d,1.1)'),
+    fragmentShader:particleFragment,
   });
   const points=new THREE.Points(geo,mat);points.frustumCulled=false;return points;
 }
