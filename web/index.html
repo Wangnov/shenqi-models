@@ -37,13 +37,28 @@
         <div class="artifact-label"><span id="artifact-name">野生狗奶</span><span class="artifact-divider"></span><span id="artifact-spec">保质期：永久</span></div>
         <div class="scene-controls">
           <button id="action" class="action-button"><span class="action-icon">◌</span><span id="action-label">按住，解构永恒</span><span class="action-arrow">↗</span></button>
+          <div id="eternal-controls" class="theme-controls">
+            <button id="cycle" aria-pressed="false">开启永恒轮回 ∞</button>
+            <p id="epoch">同一粒尘埃，会再次成为星辰。</p>
+          </div>
+          <div id="spatial-controls" class="theme-controls" hidden>
+            <label for="space-spread">折叠尺度 <span id="space-value">收束 · 一个世界</span></label>
+            <input id="space-spread" type="range" min="0" max="1" step="0.01" value="0" aria-label="空间展开程度" />
+            <p>展开光门，同时观察前、侧、背面。</p>
+          </div>
           <div class="timeline" id="timeline" hidden>
             <div class="timeline-top"><span>时间流速</span><div><button id="reverse" aria-label="倒转时间" title="倒转时间">↶</button><button id="pause" aria-label="暂停时间" title="暂停时间">Ⅱ</button><span id="time-rate">+1.0 ×</span></div></div>
-            <input id="time-scrub" aria-label="时间位置" type="range" min="0" max="60" step="0.01" value="24" />
-            <div class="timeline-labels"><span>2008.09.16</span><span>2018.09.16</span></div>
+            <input id="time-scrub" aria-label="时间位置" type="range" min="0" max="60" step="0.01" value="36" />
+            <div class="timeline-labels"><button data-year="16">2008 · 过期</button><button data-year="36">2018 · 诞生</button><button data-year="57">2028 · 余烬</button></div>
+            <p id="time-meaning" class="time-meaning">2018 · 终于诞生，却已过期十年。</p>
           </div>
         </div>
       </section>
+      <div class="view-tools" aria-label="模型观察工具">
+        <span>拖动旋转 · 滚轮 / 双指缩放</span>
+        <button id="zoom-in" aria-label="放大场景">＋</button><button id="zoom-out" aria-label="缩小场景">−</button>
+        <button id="reset-view">复位</button><button id="immersive" aria-pressed="false">沉浸观赏</button>
+      </div>
       <div class="coordinate" aria-hidden="true"><span id="coordinate-value">∞</span><span id="coordinate-label">存在，无需期限</span></div>
       <div id="scene-status" class="scene-status" role="status" aria-live="polite"></div>
     </main>

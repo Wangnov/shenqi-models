@@ -90,9 +90,9 @@ export function atmosphere(color: string) {
     float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
     float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
     float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<4;i++){s+=a*noise(p);p=p*2.1+4.3;a*=.5;}return s;}
-    void main(){vec2 p=(vUv-.5)*vec2(1.75,1.);float r=length(p-vec2(.07,0.));float fog=fbm(p*5.+vec2(uTime*.009,0.));float arc=exp(-pow((r-.22)*11.,2.));float strength=arc*fog*.16+exp(-r*r*7.)*.026;gl_FragColor=vec4(uColor*strength,1.);}
+    void main(){vec2 p=(vUv-.5)*vec2(4.375,2.5);float r=length(p-vec2(.07,0.));float fog=fbm(p*5.+vec2(uTime*.009,0.));float arc=exp(-pow((r-.22)*11.,2.));float strength=arc*fog*.16+exp(-r*r*7.)*.026;gl_FragColor=vec4(uColor*strength,1.);}
   `,depthWrite:false});
-  const mesh=new THREE.Mesh(new THREE.PlaneGeometry(48,30),material);mesh.position.set(2,1,-18);mesh.renderOrder=-20;return mesh;
+  const mesh=new THREE.Mesh(new THREE.PlaneGeometry(120,75),material);mesh.position.set(2,1,-18);mesh.renderOrder=-20;return mesh;
 }
 
 export function timeDial(){
