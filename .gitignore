@@ -5,3 +5,5 @@ __pycache__/
 *.blend2
 *.tmp
 render.png
+node_modules/
+web/dist/

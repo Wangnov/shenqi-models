@@ -4,6 +4,8 @@
 
 提供可编辑的 Blender 源文件、自包含 GLB 和实际渲染预览，采用 [MIT License](LICENSE)。
 
+**[进入三神器宇宙 ↗](https://wangnov.github.io/shenqi-models/)** — 永恒的粒子聚散、空间穿越、时间暂停与倒流。基于真实模型的可交互 Three.js 场景，[运行说明与源码](web/README.md)。
+
 <table>
   <tr>
     <td width="50%" align="center">
@@ -51,6 +53,7 @@ models/
 docs/
   previews/              # 实际模型渲染
   REFERENCES.md          # 参考来源与重绘说明
+web/                     # 可交互 Three.js 网站与网页专用模型
 LICENSE
 SHA256SUMS               # 发布文件校验值
 ```

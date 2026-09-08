@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#04070d" />
+    <meta name="description" content="三件寻常之物，三种宇宙法则。进入由真实 3D 模型、粒子与时间构成的三神器宇宙。" />
+    <title>三神器 — 永恒 / 空间 / 时间</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23040810'/%3E%3Ccircle cx='32' cy='32' r='17' stroke='%23dbedff' fill='none'/%3E%3Cellipse cx='32' cy='32' rx='26' ry='8' transform='rotate(-35 32 32)' fill='none' stroke='%23dbedff'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div id="stage" aria-label="可交互的三神器 3D 场景"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="curtain" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#eternity" aria-label="三神器首页">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="13"/><ellipse cx="24" cy="24" rx="22" ry="7" transform="rotate(-36 24 24)"/><circle cx="40" cy="13" r="2" class="brand-dot"/></svg>
+        <span>三神器<small>SHENQI UNIVERSE</small></span>
+      </a>
+      <div class="header-right">
+        <span class="live-label"><i></i> 可交互的宇宙</span>
+        <button class="icon-button" id="sound" aria-label="开启环境声音" aria-pressed="false" title="开启环境声音">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path class="sound-waves" d="M17 8c3 2 3 6 0 8M20 5c5 4 5 10 0 14"/><path class="sound-muted" d="m17 10 4 4m0-4-4 4"/></svg>
+        </button>
+        <a class="source-link" href="https://github.com/Wangnov/shenqi-models" target="_blank" rel="noopener noreferrer">开源模型 <span>↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="story" aria-labelledby="scene-title">
+        <p class="eyebrow"><span id="chapter-number">01</span><span class="eyebrow-line"></span><span id="chapter-en">ETERNITY</span></p>
+        <h1 id="scene-title">永恒<span class="title-period">.</span></h1>
+        <p class="story-subtitle" id="scene-subtitle">万物消逝，它依然在。</p>
+        <p class="story-description" id="scene-description">粒子散入无尽虚空，又回到最初的模样。<br>在时间的尽头，仍有一盒野生狗奶。</p>
+        <div class="artifact-label"><span id="artifact-name">野生狗奶</span><span class="artifact-divider"></span><span id="artifact-spec">保质期：永久</span></div>
+        <div class="scene-controls">
+          <button id="action" class="action-button"><span class="action-icon">◌</span><span id="action-label">按住，解构永恒</span><span class="action-arrow">↗</span></button>
+          <div class="timeline" id="timeline" hidden>
+            <div class="timeline-top"><span>时间流速</span><div><button id="reverse" aria-label="倒转时间" title="倒转时间">↶</button><button id="pause" aria-label="暂停时间" title="暂停时间">Ⅱ</button><span id="time-rate">+1.0 ×</span></div></div>
+            <input id="time-scrub" aria-label="时间位置" type="range" min="0" max="60" step="0.01" value="24" />
+            <div class="timeline-labels"><span>2008.09.16</span><span>2018.09.16</span></div>
+          </div>
+        </div>
+      </section>
+      <div class="coordinate" aria-hidden="true"><span id="coordinate-value">∞</span><span id="coordinate-label">存在，无需期限</span></div>
+      <div id="scene-status" class="scene-status" role="status" aria-live="polite"></div>
+    </main>
+
+    <footer class="site-footer">
+      <nav class="chapter-nav" aria-label="选择宇宙章节">
+        <button class="chapter active" data-scene="0" aria-current="true"><span class="chapter-num">01</span><span class="chapter-name">永恒<small>ETERNITY</small></span><span class="chapter-indicator"></span></button>
+        <button class="chapter" data-scene="1"><span class="chapter-num">02</span><span class="chapter-name">空间<small>SPACE</small></span><span class="chapter-indicator"></span></button>
+        <button class="chapter" data-scene="2"><span class="chapter-num">03</span><span class="chapter-name">时间<small>TIME</small></span><span class="chapter-indicator"></span></button>
+      </nav>
+      <div class="footer-meta"><span id="interaction-hint">移动探索 · 按住扰动 · 滚动切换</span><button id="quality" aria-label="切换画质">画质 <span>自动</span><i></i></button></div>
+    </footer>
+
+    <section class="loading-screen" id="loading" aria-label="正在加载场景">
+      <div class="loading-orbit"><span></span><i></i></div>
+      <p class="loading-brand">三神器</p><p class="loading-copy" id="loading-copy">正在唤醒这个宇宙</p>
+      <div class="loading-track"><span id="loading-progress"></span></div>
+      <button id="retry" hidden>重新加载</button>
+    </section>
+    <noscript>请启用 JavaScript 以探索三神器 3D 场景。</noscript>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
