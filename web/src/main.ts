@@ -11,6 +11,7 @@ import { particles, atmosphere, orbitLines, portalFrame, sampleSurface, timeDial
 import { SceneMusic } from './music';
 import { monument, infinityRiver, chronology } from './monuments';
 import './style.css';
+import './brand';
 
 const $ = <T extends HTMLElement = HTMLElement>(selector:string) => document.querySelector<T>(selector)!;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;

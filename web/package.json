@@ -7,9 +7,12 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "assets": "node scripts/prepare-assets.mjs"
+    "assets": "node scripts/prepare-assets.mjs",
+    "brand": "node scripts/prepare-brand.mjs"
   },
-  "dependencies": { "three": "^0.183.0" },
+  "dependencies": {
+    "three": "^0.183.0"
+  },
   "devDependencies": {
     "@gltf-transform/core": "^4.3.0",
     "@gltf-transform/extensions": "^4.3.0",

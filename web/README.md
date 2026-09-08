@@ -40,3 +40,7 @@ npm run dev
 视觉设计参考了 Image 2 概念图，网页中展示的是实际 3D 模型与实时生成特效，不使用概念图作场景背景。
 
 本目录代码及新增效果采用仓库根目录 MIT 许可证；原模型素材说明见 `docs/REFERENCES.md`。
+
+## 标志
+
+Image2 设计稿与描摹说明见 [标志设计](../docs/brand/README.md)。页首 SVG 的钟针、立方体、无穷光线分别运动；标签图标使用同源 PNG 帧更新，支持后台暂停和减少动态效果偏好。`npm run brand` 从 SVG 生成静态图标与 favicon 帧。
