@@ -4,7 +4,7 @@
 
 提供可编辑的 Blender 源文件、自包含 GLB 和实际渲染预览，采用 [MIT License](LICENSE)。
 
-**[进入三神器宇宙 ↗](https://wangnov.github.io/shenqi-models/)** — 宇宙生灭而牛奶永存、十倍空间展开、负十年因果时间轴；支持模型旋转、缩放和沉浸观赏。基于真实模型的可交互 Three.js 场景，[运行说明与源码](web/README.md)。
+**[进入三神器宇宙 ↗](https://model.wangnov-ai.com/shenqi/)** — 宇宙生灭而牛奶永存、十倍空间展开、负十年因果时间轴；支持模型旋转、缩放和沉浸观赏。基于真实模型的可交互 Three.js 场景，[运行说明与源码](web/README.md)。
 
 <table>
   <tr>
@@ -27,6 +27,8 @@
     </td>
   </tr>
 </table>
+
+模型预览目录：[model.wangnov-ai.com](https://model.wangnov-ai.com/) · [Cloudflare 部署与新增预览页](cloudflare/README.md)
 
 ## 下载与使用
 

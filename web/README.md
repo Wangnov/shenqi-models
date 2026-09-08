@@ -44,3 +44,7 @@ npm run dev
 ## 标志
 
 Image2 设计稿与描摹说明见 [标志设计](../docs/brand/README.md)。页首 SVG 的钟针、立方体、无穷光线分别运动；标签图标使用同源 PNG 帧更新，支持后台暂停和减少动态效果偏好。`npm run brand` 从 SVG 生成静态图标与 favicon 帧。
+
+## 线上主站
+
+三神器主站：<https://model.wangnov-ai.com/shenqi/>。模型目录：<https://model.wangnov-ai.com/>。Cloudflare 发布与后续模型路径配置见 [部署说明](../cloudflare/README.md)。

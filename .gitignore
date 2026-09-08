@@ -7,3 +7,6 @@ __pycache__/
 render.png
 node_modules/
 web/dist/
+
+cloudflare/dist/
+.wrangler/

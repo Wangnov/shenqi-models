@@ -8,7 +8,9 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "assets": "node scripts/prepare-assets.mjs",
-    "brand": "node scripts/prepare-brand.mjs"
+    "brand": "node scripts/prepare-brand.mjs",
+    "build:cf": "npm run build && node ../cloudflare/build.mjs",
+    "deploy:cf": "npm run build:cf && wrangler deploy --config ../cloudflare/wrangler.jsonc"
   },
   "dependencies": {
     "three": "^0.183.0"

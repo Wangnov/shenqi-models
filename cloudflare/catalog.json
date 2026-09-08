@@ -1,0 +1,13 @@
+[
+  {
+    "slug": "shenqi",
+    "title": "三神器宇宙",
+    "description": "三件寻常之物，三种宇宙法则。旋转、靠近，进入它们各自的世界。",
+    "source": "web/dist",
+    "scenes": [
+      {"title":"永恒", "artifact":"野生狗奶", "hash":"eternity", "preview":"docs/previews/wild-dog-milk.png"},
+      {"title":"空间", "artifact":"菊花饮料", "hash":"space", "preview":"docs/previews/chrysanthemum-drink.png"},
+      {"title":"时间", "artifact":"春秋肠", "hash":"time", "preview":"docs/previews/chunqiu-sausage.png"}
+    ]
+  }
+]
