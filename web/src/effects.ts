@@ -49,12 +49,13 @@ void main(){
   vAlpha=(.28+aSeed.y*.7)*.82*min(1.,pow(desired/footprint,2.));
 }`;
 const particleFragment = /* glsl */`
+uniform float uLife;
 varying vec3 vColor;
 varying float vAlpha;
 void main(){
   float d=length(gl_PointCoord-.5)*2.;
   float a=exp(-4.5*d*d)*(1.-smoothstep(.7,1.,d))*vAlpha;
-  gl_FragColor=vec4(vColor,a);
+  gl_FragColor=vec4(vColor,a*uLife);
 }`;
 
 export function particles(count: number, mode: number, colorA: string, colorB: string) {
@@ -69,7 +70,7 @@ export function particles(count: number, mode: number, colorA: string, colorB: s
     c.copy(ca).lerp(cb,random());colors.set([c.r,c.g,c.b],i*3);
   }
   const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('aSeed',new THREE.BufferAttribute(seeds,4));geo.setAttribute('aColor',new THREE.BufferAttribute(colors,3));
-  const material=new THREE.ShaderMaterial({uniforms:{uTime:{value:0},uForce:{value:0},uDpr:{value:1},uMode:{value:mode}},vertexShader:particleVertex,fragmentShader:particleFragment,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
+  const material=new THREE.ShaderMaterial({uniforms:{uTime:{value:0},uForce:{value:0},uLife:{value:1},uDpr:{value:1},uMode:{value:mode}},vertexShader:particleVertex,fragmentShader:particleFragment,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
   const mesh=new THREE.Points(geo,material);mesh.frustumCulled=false;
   return mesh;
 }

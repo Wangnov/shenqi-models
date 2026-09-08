@@ -37,9 +37,9 @@ export function monument(theme: number) {
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   const stars = new THREE.Points(geometry, new THREE.ShaderMaterial({
-    vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    uniforms:{uLife:{value:1}},vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
     vertexShader: `varying vec3 vColor;void main(){vColor=color;vec4 p=modelViewMatrix*vec4(position,1.);gl_Position=projectionMatrix*p;gl_PointSize=2.8;}`,
-    fragmentShader: `varying vec3 vColor;void main(){float r=length(gl_PointCoord-.5)*2.;gl_FragColor=vec4(vColor,exp(-4.*r*r)*(1.-smoothstep(.7,1.,r))*.28);}`,
+    fragmentShader: `uniform float uLife;varying vec3 vColor;void main(){float r=length(gl_PointCoord-.5)*2.;gl_FragColor=vec4(vColor,exp(-4.*r*r)*(1.-smoothstep(.7,1.,r))*.28*uLife);}`,
   }));
   root.add(stars);
   const eclipse = new THREE.Mesh(new THREE.SphereGeometry(5.2, 64, 32), new THREE.MeshStandardMaterial({color:'#030810',roughness:.92}));
@@ -47,6 +47,17 @@ export function monument(theme: number) {
   const halo = new THREE.Mesh(new THREE.TorusGeometry(5.3, .045, 8, 192),new THREE.MeshBasicMaterial({color:color.clone().multiplyScalar(1.8),transparent:true,opacity:.55}));
   halo.position.copy(eclipse.position);root.add(halo);
   return {root, rings, pillars, stars, update(t: number, entropy: number) {
+    if(theme===0){
+      const life=Math.pow(Math.sin(entropy*Math.PI),2);
+      const expansion=.18+entropy*2.1;
+      stars.scale.set(expansion,expansion,1);stars.material.uniforms.uLife.value=life;
+      rings.scale.setScalar(.12+expansion*1.3);
+      rings.children.forEach((o,i)=>{((o as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity=(.18+(i%2)*.12)*life;});
+      pillars.scale.setScalar(expansion);stone.transparent=true;stone.opacity=life;
+      eclipse.scale.setScalar(.15+life);halo.scale.copy(eclipse.scale);halo.material.opacity=.55*life;
+      rings.rotation.z=t*.008;stars.rotation.z=t*.003;
+      return;
+    }
     rings.rotation.z = t * .008;
     stars.rotation.z = t * .003;
     pillars.rotation.z = t * -.002;
@@ -66,4 +77,26 @@ export function infinityRiver() {
     tube.scale.setScalar(1 + i * .035);group.add(tube);
   }
   return group;
+}
+
+/** Date inscriptions belong to the 3D installation and remain in immersion. */
+export function chronology(){
+  const root=new THREE.Group();root.position.set(0,-2.5,-2);
+  function inscription(text:string,color:string,width:number){
+    const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=128;
+    const ctx=canvas.getContext('2d')!;ctx.font='500 52px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=color;ctx.fillText(text,512,64);
+    const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
+    const mesh=new THREE.Mesh(new THREE.PlaneGeometry(width,width/8),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,side:THREE.DoubleSide}));return mesh;
+  }
+  const ticks:number[]=[];
+  for(let year=0;year<=30;year++){const x=(year-15)*.32;ticks.push(x,0,0,x,year%5===0?.25:.12,0);}
+  ticks.push(-4.8,0,0,4.8,0,0);
+  root.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(ticks,3)),new THREE.LineBasicMaterial({color:'#cca77f',transparent:true,opacity:.65})));
+  const end=inscription('2008 · 已经过期','#9cbfef',3);end.position.set(-2.24,.65,0);root.add(end);
+  const start=inscription('2018 · 才被生产','#ffd6a3',3);start.position.set(.96,.65,0);root.add(start);
+  const gap=inscription('←  保质期：负十年  →','#ffb77c',4.5);gap.position.set(-.64,-.65,0);root.add(gap);
+  const span=new THREE.Mesh(new THREE.BoxGeometry(3.2,.035,.035),new THREE.MeshBasicMaterial({color:'#db9163'}));span.position.set(-.64,-.22,0);root.add(span);
+  const cursor=new THREE.Mesh(new THREE.SphereGeometry(.065,12,8),new THREE.MeshBasicMaterial({color:'#fff4e3'}));root.add(cursor);
+  const marker=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,-.15,0),new THREE.Vector3(0,.38,0)]),new THREE.LineBasicMaterial({color:'#fff2d9'}));root.add(marker);
+  return{root,update(age:number){cursor.position.x=marker.position.x=(age-.5)*9.6;}};
 }

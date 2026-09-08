@@ -36,20 +36,20 @@
         <p class="story-description" id="scene-description">粒子散入无尽虚空，又回到最初的模样。<br>在时间的尽头，仍有一盒野生狗奶。</p>
         <div class="artifact-label"><span id="artifact-name">野生狗奶</span><span class="artifact-divider"></span><span id="artifact-spec">保质期：永久</span></div>
         <div class="scene-controls">
-          <button id="action" class="action-button"><span class="action-icon">◌</span><span id="action-label">按住，解构永恒</span><span class="action-arrow">↗</span></button>
+          <button id="action" class="action-button"><span class="action-icon">◌</span><span id="action-label">推进宇宙生灭</span><span class="action-arrow">↗</span></button>
           <div id="eternal-controls" class="theme-controls">
-            <button id="cycle" aria-pressed="false">开启永恒轮回 ∞</button>
-            <p id="epoch">同一粒尘埃，会再次成为星辰。</p>
+            <button id="cycle" aria-pressed="false">暂停宇宙演化 ∞</button>
+            <p id="epoch">宇宙不断生灭，牛奶始终如一。</p>
           </div>
           <div id="spatial-controls" class="theme-controls" hidden>
-            <label for="space-spread">折叠尺度 <span id="space-value">收束 · 一个世界</span></label>
+            <label for="space-spread">容积尺度 <span id="space-value">收束 · 一个世界</span></label>
             <input id="space-spread" type="range" min="0" max="1" step="0.01" value="0" aria-label="空间展开程度" />
-            <p>展开光门，同时观察前、侧、背面。</p>
+            <p>十个空间单元 · 每份 250 mL · 合计 2500 mL</p>
           </div>
           <div class="timeline" id="timeline" hidden>
-            <div class="timeline-top"><span>时间流速</span><div><button id="reverse" aria-label="倒转时间" title="倒转时间">↶</button><button id="pause" aria-label="暂停时间" title="暂停时间">Ⅱ</button><span id="time-rate">+1.0 ×</span></div></div>
+            <div class="timeline-top"><span>1 分钟 / 30 年</span><div><button id="reverse" aria-label="倒转时间" title="倒转时间">↶</button><button id="pause" aria-label="暂停时间" title="暂停时间">Ⅱ</button><span id="time-rate">+1.0 ×</span></div></div>
             <input id="time-scrub" aria-label="时间位置" type="range" min="0" max="60" step="0.01" value="36" />
-            <div class="timeline-labels"><button data-year="16">2008 · 过期</button><button data-year="36">2018 · 诞生</button><button data-year="57">2028 · 余烬</button></div>
+            <div class="timeline-labels"><button data-year="16">2008 · 过期</button><button data-year="36">2018 · 诞生</button><button data-year="57">2028 · 又十年</button></div>
             <p id="time-meaning" class="time-meaning">2018 · 终于诞生，却已过期十年。</p>
           </div>
         </div>
@@ -78,6 +78,7 @@
       <div class="loading-track"><span id="loading-progress"></span></div>
       <button id="retry" hidden>重新加载</button>
     </section>
+    <div id="immersive-hint" role="status">双击退出沉浸 · Esc 也可返回</div>
     <noscript>请启用 JavaScript 以探索三神器 3D 场景。</noscript>
     <script type="module" src="/src/main.ts"></script>
   </body>
