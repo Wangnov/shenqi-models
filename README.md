@@ -4,10 +4,27 @@
 
 提供可编辑的 Blender 源文件、自包含 GLB 和实际渲染预览，采用 [MIT License](LICENSE)。
 
-| 野生狗奶 | 春秋肠 | 菊花饮料 |
-| :---: | :---: | :---: |
-| ![野生狗奶](docs/previews/wild-dog-milk.png) | ![春秋肠](docs/previews/chunqiu-sausage.png) | ![菊花饮料](docs/previews/chrysanthemum-drink.png) |
-| [模型与说明](models/wild-dog-milk) | [模型与说明](models/chunqiu-sausage) | [模型与说明](models/chrysanthemum-drink) |
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <strong>野生狗奶</strong><br><br>
+      <a href="models/wild-dog-milk"><img src="docs/previews/wild-dog-milk.png" alt="野生狗奶" width="100%"></a><br><br>
+      <a href="models/wild-dog-milk">模型与说明</a>
+    </td>
+    <td width="50%" align="center">
+      <strong>菊花饮料</strong><br><br>
+      <a href="models/chrysanthemum-drink"><img src="docs/previews/chrysanthemum-drink.png" alt="菊花饮料" width="100%"></a><br><br>
+      <a href="models/chrysanthemum-drink">模型与说明</a>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <strong>春秋肠</strong><br><br>
+      <a href="models/chunqiu-sausage"><img src="docs/previews/chunqiu-sausage.png" alt="春秋肠" width="100%"></a><br><br>
+      <a href="models/chunqiu-sausage">模型与说明</a>
+    </td>
+  </tr>
+</table>
 
 ## 下载与使用
 
