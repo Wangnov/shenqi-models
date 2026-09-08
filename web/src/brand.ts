@@ -19,9 +19,9 @@ function resume(){
 }
 async function prepare(){
  if(reduced.matches)return;
- try{const response=await fetch(`${import.meta.env.BASE_URL}brand/favicon-frames.json`);if(!response.ok)return;frames=await response.json();resume();}catch{/* The static SVG remains available offline or on request failure. */}
+ try{const response=await fetch(`${import.meta.env.BASE_URL}brand/favicon-frames.json?v=motion2`);if(!response.ok)return;frames=await response.json();resume();}catch{/* The static SVG remains available offline or on request failure. */}
 }
-document.addEventListener('visibilitychange',()=>{mark.querySelectorAll<SVGElement>('.sq-hand,.sq-space,.sq-flow').forEach(el=>el.style.animationPlayState=document.hidden?'paused':'running');resume();});
+document.addEventListener('visibilitychange',()=>{document.body.classList.toggle('brand-background',document.hidden);resume();});
 reduced.addEventListener('change',()=>{if(!frames&&!reduced.matches)void prepare();else resume();});
 addEventListener('pagehide',pause);addEventListener('pageshow',resume);
 setTimeout(()=>void prepare(),1600);

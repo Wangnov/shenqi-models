@@ -10,8 +10,8 @@ await sharp(Buffer.from(favicon)).resize(64,64).png().toFile(new URL('favicon.pn
 await sharp(Buffer.from(favicon)).resize(180,180).png().toFile(new URL('apple-touch-icon.png',root).pathname);
 const frames=[];
 for(let i=0;i<48;i++){
- const phase=i/48,wave=Math.sin(phase*Math.PI*2),sx=1-.12*Math.abs(wave),skew=6*wave;
- const frame=favicon.replace('class="sq-hand"',`class="sq-hand" transform="rotate(${phase*360} 128 124)"`).replace('class="sq-space"',`class="sq-space" transform="translate(128 124) scale(${sx} 1) skewY(${skew}) translate(-128 -124)"`).replace('class="sq-flow"',`class="sq-flow" stroke-dasharray="24 384" stroke-dashoffset="${-408*phase}"`);
+ const phase=i/48,wave=Math.cos(phase*Math.PI*2),tilt=-12*wave,size=.99-.05*wave;
+ const frame=favicon.replace('class="sq-hand"',`class="sq-hand" transform="rotate(${phase*360} 128 124)"`).replace('class="sq-space"',`class="sq-space" transform="rotate(${phase*360} 128 124)"`).replace('class="sq-eternity"',`class="sq-eternity" transform="translate(128 154) rotate(${tilt}) scale(${size}) translate(-128 -154)"`).replace('class="sq-flow"',`class="sq-flow" stroke-dasharray="72 132" stroke-dashoffset="${-408*phase}"`);
  frames.push('data:image/png;base64,'+(await sharp(Buffer.from(frame)).resize(32,32).png().toBuffer()).toString('base64'));
 }
 await writeFile(new URL('favicon-frames.json',root),JSON.stringify(frames));
