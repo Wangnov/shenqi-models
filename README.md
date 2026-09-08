@@ -6,6 +6,10 @@
 
 **[进入三神器宇宙 ↗](https://model.wangnov-ai.com/shenqi/)** — 宇宙生灭而牛奶永存、十倍空间展开、负十年因果时间轴；支持模型旋转、缩放和沉浸观赏。基于真实模型的可交互 Three.js 场景，[运行说明与源码](web/README.md)。
 
+[![三神器宇宙在线预览：永恒、空间与时间](docs/previews/shenqi-universe.jpg)](https://model.wangnov-ai.com/shenqi/)
+
+在线体验：**https://model.wangnov-ai.com/shenqi/** · [模型展厅目录](https://model.wangnov-ai.com/)
+
 <table>
   <tr>
     <td width="50%" align="center">
